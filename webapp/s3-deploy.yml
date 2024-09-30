@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  WebAppS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "webapp-${AWS::Region}-${AWS::AccountId}"
+      WebsiteConfiguration:
+        IndexDocument: index.html
+
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: !GetAtt WebAppS3Bucket.DomainName
+            Id: WebAppOrigin
+            S3OriginConfig: {}
+        DefaultCacheBehavior:
+          TargetOriginId: WebAppOrigin
+          ViewerProtocolPolicy: "redirect-to-https"
+        Enabled: true
+        DefaultRootObject: "index.html"
+
+Outputs:
+  WebAppUrl:
+    Value: !GetAtt CloudFrontDistribution.DomainName
