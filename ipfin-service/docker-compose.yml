@@ -1,0 +1,6 @@
+﻿services:
+  ipfn-web-service:
+    image: ipfn-web-service
+    build:
+      context: .
+      dockerfile: ipfn-web-service/Dockerfile
